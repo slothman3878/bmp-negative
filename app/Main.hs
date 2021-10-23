@@ -14,7 +14,7 @@ main = do
   let offSet = toInt [content!!10, content!!11, content!!12, content!!13]
   -- get header bytes
   let (header,pixelData) = splitAt offSet content
-  -- apply constraints on header
+  -- apply constraints on header (i.e. compression header, pixel size header)
 
   -- get image width
   let width = toInt [content!!18, content!!19, content!!20, content!!21]
@@ -27,7 +27,7 @@ main = do
   print "success!"
 
 -- HexNum to Int for parsing Header
-toInt :: [Word8] -> Int
+toInt :: [Byte] -> Int
 toInt [] = 0
 toInt [x] = fromIntegral x
 toInt (x:xs) = fromIntegral x + (shift (toInt xs) 8)
@@ -38,11 +38,11 @@ type BmpImage = [([Byte],[Byte])] --[([RGB Byte],[Padding Byte])]
 
 -- Each row is rowSize bytes long
 -- For each row, the padding is the last (rowSize - 3*width) bytes
-parseImage :: Int -> Int -> [Word8] -> BmpImage
+parseImage :: Int -> Int -> [Byte] -> BmpImage
 parseImage width rowSize = map (splitAt $3*width) . chunksOf rowSize
 
 -- simply concatenate everything
-toByteArray :: BmpImage -> [Word8]
+toByteArray :: BmpImage -> [Byte]
 toByteArray = concat . map (\(x,y)-> x++y)
 
 -- Negating the RGB values
