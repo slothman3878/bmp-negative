@@ -8,7 +8,7 @@ import Data.List.Split
 main :: IO ()
 main = do
   -- read the raw .bmp file
-  image <- BS.readFile "new_bmp.bmp"
+  image <- BS.readFile "bmp_24.bmp"
   case parseImage (BS.unpack image) of
     Left err -> print err
     Right a -> BS.writeFile "new_bmp.bmp" $ BS.pack $ toByteArray $ negateImage a
@@ -18,15 +18,15 @@ parseImage image
   | header_field /= (66+77*256)       = Left "Not a valid BMP file" 
   | compression_field /= 0            = Left "BMP file is compressed"
   | pixel_size /= 24                  = Left "Pixel size should be 24 bits"
-  | otherwise                         = Right $ toBmpImage image
+  | otherwise                         = Right $ toBmpImage width rowSize image
   where header_field = toInt [image!!0,image!!1]
         compression_field = toInt [image!!30,image!!31,image!!32,image!!33]
         pixel_size = toInt [image!!28,image!!29]
-        width = toInt [content!!18, content!!19, content!!20, content!!21]
-        
+        width = toInt [image!!18, image!!19, image!!20, image!!21]
+        rowSize = (*) 4 $ ceiling $ (24 * (fromIntegral width)) / 32 
 
-negateImage :: BmpImage -> BmpImage
-negateImage image = 
+-- We will call the Word8 data type as Byte instead
+type Byte = Word8
 
 -- HexNum to Int for parsing Header
 toInt :: [Byte] -> Int
@@ -35,7 +35,6 @@ toInt [x] = fromIntegral x
 toInt (x:xs) = fromIntegral x + (shift (toInt xs) 8)
 
 -- Parsing Image given image width and pixel data row size
-type Byte = Word8
 type BmpImage = [([Byte],[Byte])] --[([RGB Byte],[Padding Byte])]
 
 -- Each row is rowSize bytes long
