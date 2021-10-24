@@ -21,11 +21,10 @@ maintainer:         doyun.kim3878@protonmail.com
 -- category:
 extra-source-files: CHANGELOG.md
 
-executable bmp-to-negative-haskell
+executable bmp-negative
     main-is:          Main.hs
-    exposed-modules:  Main
     -- Modules included in this executable, other than Main.
-    -- other-modules:
+    other-modules:    BMP
 
     -- LANGUAGE extensions used by modules in this package.
     -- other-extensions:
@@ -33,5 +32,5 @@ executable bmp-to-negative-haskell
       base ^>=4.14.3.0,
       bytestring ^>= 0.10.12.0,
       split ^>= 0.2.3.4
-    hs-source-dirs:   app
+    hs-source-dirs:   app, src
     default-language: Haskell2010
