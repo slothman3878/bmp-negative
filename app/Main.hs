@@ -8,23 +8,24 @@ import Data.List.Split
 main :: IO ()
 main = do
   -- read the raw .bmp file
-  raw <- BS.readFile "new_bmp.bmp"
-  let content = BS.unpack raw
-  -- get the index where pixels start
-  let offSet = toInt [content!!10, content!!11, content!!12, content!!13]
-  -- get header bytes
-  let (header,pixelData) = splitAt offSet content
-  -- apply constraints on header (i.e. compression header, pixel size header)
+  image <- BS.readFile "new_bmp.bmp"
+  case parseImage (BS.unpack image) of
+    Left err -> print err
+    Right a -> BS.writeFile "new_bmp.bmp" $ BS.pack $ toByteArray $ negateImage a
 
-  -- get image width
-  let width = toInt [content!!18, content!!19, content!!20, content!!21]
-  -- get rowSize of pixelData
-  let rowSize = (*) 4 $ ceiling $ (24 * (fromIntegral width)) / 32
-  -- parse pixel data and get negative colors
-  let negativePixels = toByteArray $ negateImage $ parseImage width rowSize pixelData
-  -- write to bmp file
-  BS.writeFile "new_bmp.bmp" $ BS.pack $ header ++ negativePixels
-  print "success!"
+parseImage :: [Byte] -> Either String BmpImage
+parseImage image
+  | header_field /= (66+77*256)       = Left "Not a valid BMP file" 
+  | compression_field /= 0            = Left "BMP file is compressed"
+  | pixel_size /= 24                  = Left "Pixel size should be 24 bits"
+  | otherwise                         = Right $ toBmpImage image
+  where header_field = toInt [image!!0,image!!1]
+        compression_field = toInt [image!!30,image!!31,image!!32,image!!33]
+        pixel_size = toInt [image!!28,image!!29]
+        width = toInt
+
+negateImage :: BmpImage -> BmpImage
+negateImage image = 
 
 -- HexNum to Int for parsing Header
 toInt :: [Byte] -> Int
@@ -38,8 +39,8 @@ type BmpImage = [([Byte],[Byte])] --[([RGB Byte],[Padding Byte])]
 
 -- Each row is rowSize bytes long
 -- For each row, the padding is the last (rowSize - 3*width) bytes
-parseImage :: Int -> Int -> [Byte] -> BmpImage
-parseImage width rowSize = map (splitAt $3*width) . chunksOf rowSize
+toBmpImage :: Int -> Int -> [Byte] -> BmpImage
+toBmpImage width rowSize = map (splitAt $3*width) . chunksOf rowSize
 
 -- simply concatenate everything
 toByteArray :: BmpImage -> [Byte]
