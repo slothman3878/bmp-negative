@@ -23,7 +23,7 @@ extra-source-files: CHANGELOG.md
 
 executable bmp-to-negative-haskell
     main-is:          Main.hs
-
+    exposed-modules:  Main
     -- Modules included in this executable, other than Main.
     -- other-modules:
 
