@@ -22,7 +22,8 @@ parseImage image
   where header_field = toInt [image!!0,image!!1]
         compression_field = toInt [image!!30,image!!31,image!!32,image!!33]
         pixel_size = toInt [image!!28,image!!29]
-        width = toInt
+        width = toInt [content!!18, content!!19, content!!20, content!!21]
+        
 
 negateImage :: BmpImage -> BmpImage
 negateImage image = 
