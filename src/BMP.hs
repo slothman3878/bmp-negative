@@ -52,7 +52,7 @@ negateImage (h,p) = (h, negatePixels p)
 parseImage :: [Byte] -> Either String BmpImage
 parseImage image
   | length image < 54             = Left "byte array shorter than 54: Not long enough to be parsed\n Check whether your image is a valid bmp image"
-  | header_field /= (66+77*256)   = Left "wrong header field: Check whether your image is a valid bmp"
+  | header_field /= (66+77*256)   = Left "bogus header info: Check whether your image is a valid bmp"
   | compression_field /= 0        = Left "compressed BMP: can only accept uncompressed BMP"
   | bpp /= 24                     = Left "not 24bpp: can only support 24bpp images"
   | otherwise                     = Right $ toBmpImage width height offSet image
