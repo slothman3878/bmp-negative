@@ -3,10 +3,10 @@ name:               bmp-to-negative-haskell
 version:            0.1.0.0
 
 -- A short (one-line) description of the package.
--- synopsis:
+synopsis: generates a negative .bmp image
 
 -- A longer description of the package.
--- description:
+description: generates a neegative .bmp image. Only 24 bpp supported.
 
 -- A URL where users can report bugs.
 -- bug-reports:
@@ -21,16 +21,33 @@ maintainer:         doyun.kim3878@protonmail.com
 -- category:
 extra-source-files: CHANGELOG.md
 
+common common-all
+    build-depends:
+      base ^>=4.14.3.0,
+      bytestring ^>= 0.10.12.0,
+      split ^>= 0.2.3.4
+    ghc-options: -Wall -fwarn-unused-imports -Wincomplete-uni-patterns -Wincomplete-record-updates
+
 executable bmp-negative
+    import:           common-all
     main-is:          Main.hs
     -- Modules included in this executable, other than Main.
     other-modules:    BMP
 
     -- LANGUAGE extensions used by modules in this package.
     -- other-extensions:
-    build-depends:    
-      base ^>=4.14.3.0,
-      bytestring ^>= 0.10.12.0,
-      split ^>= 0.2.3.4
+    build-depends:
     hs-source-dirs:   app, src
     default-language: Haskell2010
+
+test-suite my-tests
+    import:           common-all      
+    type:             exitcode-stdio-1.0
+    main-is:          Test.hs
+    other-modules:    BMP
+    hs-source-dirs:   test, src
+    default-language: Haskell2010
+    build-depends:
+      hspec ^>= 2.7.4,
+      Cabal >= 3.2.1.0,
+      QuickCheck >= 2.14.2,

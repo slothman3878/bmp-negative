@@ -13,16 +13,19 @@ toInt [x] = fromIntegral x
 toInt (x:xs) = fromIntegral x + (shift (toInt xs) 8)
 
 -- Parsing Image given image width and pixel data row size
-type BmpImage = (Header,PixelData)
-type Header = [Byte]
-type PixelData = [Row]
-type Row = (RGB,Padding)
-type RGB = [Byte]
-type Padding = [Byte]
+type BmpImage   = (Header,PixelData)
+type Header     = [Byte]
+type PixelData  = [Row]
+type Row        = (RGB,Padding)
+type RGB        = [Byte]
+type Padding    = [Byte]
 
 -- Split the Byte array at the offset
+-- Need to consider all list lengths for functional safety
+-- The Pixel Data is rowSize * height bytes from the offset
 toBmpImage :: Int -> Int -> Int -> [Byte] -> BmpImage
-toBmpImage width rowSize offSet = (\(h,p)->(h,toPixelData width rowSize p)) . splitAt offSet
+toBmpImage width height offSet = (\(h,p)->(h,toPixelData width rowSize $ take (rowSize * height) p)) . splitAt offSet
+  where rowSize = div (width * 24 + 31) 32 * 4
 
 -- Each row is rowSize bytes long
 -- For each row, the padding is the last (rowSize - 3*width) bytes
@@ -32,27 +35,30 @@ toPixelData width rowSize = map (splitAt $3*width) . chunksOf rowSize
 
 -- simply concatenate everything
 toByteArray :: BmpImage -> [Byte]
-toByteArray = (\(h,p) -> h ++ concat (map (\(x,y)->x++y) p))
+toByteArray (h,p) = (++) h $ concat $ map (uncurry (++)) p
+
+-- Negating the RGB values
+negatePixels :: PixelData -> PixelData
+negatePixels = map (\(x,y)-> (map complement x , y))
 
 -- Negating enitre image
 negateImage :: BmpImage -> BmpImage
 negateImage (h,p) = (h, negatePixels p)
 
--- Negating the RGB values
-negatePixels :: PixelData -> PixelData
-negatePixels = map (\(x,y)-> (map ((-) 255) x , y))
-
 -- Checking constraints on BMP
 -- ByteArray to Either an Error or a BmpImage
+-- Functionally problematic. Consider all List lengths
+-- The length limit of 54 is somewhat of an arbitrary value. From what I understand, DIB header ends at 54th byte
 parseImage :: [Byte] -> Either String BmpImage
 parseImage image
-  | header_field /= (66+77*256)   = Left "ERROR: Not a valid BMP file" 
-  | compression_field /= 0        = Left "ERROR: BMP file is compressed"
-  | pixel_size /= 24              = Left "ERROR: Pixel size should be 24 bits"
-  | otherwise                     = Right $ toBmpImage width rowSize offSet image
+  | length image < 54             = Left "byte array shorter than 54: Not long enough to be parsed\n Check whether your image is a valid bmp image"
+  | header_field /= (66+77*256)   = Left "wrong header field: Check whether your image is a valid bmp"
+  | compression_field /= 0        = Left "compressed BMP: can only accept uncompressed BMP"
+  | bpp /= 24                     = Left "not 24bpp: can only support 24bpp images"
+  | otherwise                     = Right $ toBmpImage width height offSet image
   where header_field      = toInt [image!!0,image!!1]
         compression_field = toInt [image!!30,image!!31,image!!32,image!!33]
-        pixel_size        = toInt [image!!28,image!!29]
+        bpp               = toInt [image!!28,image!!29]
         offSet            = toInt [image!!10, image!!11, image!!12, image!!13]
         width             = toInt [image!!18, image!!19, image!!20, image!!21]
-        rowSize           = ceiling $ fromIntegral width * 3 / 32 * 4 
+        height            = toInt [image!!22, image!!23, image!!23, image!!24]
