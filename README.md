@@ -1,7 +1,6 @@
 ## 24 bpp BMP to Negative
 
-Simple haskell script that creates a negative of a given `.bmp` file. Supported `.bmp` is limited to
-
+Simple haskell script that inverts (creates a negative of) a given `.bmp` image. The original miage must be:
 1. 24 bpp pixel size
 2. Uncompressed
 
@@ -12,7 +11,7 @@ Simple haskell script that creates a negative of a given `.bmp` file. Supported 
 |blackbuck|![](images/blackbuck.bmp)|![](images/negative_blackbuck.bmp)|
 |marbles|![](images/MARBLES.BMP)|![](images/negative_MARBLES.BMP)|
 
-Example immages can be found in `/images` directory. `/images/unsupported` images contain examples of unsupported `.bmp` images.
+Example images can be found in `/images` directory. `/images/unsupported` images contain examples of unsupported `.bmp` images.
 
 ## Executable Guide
 * Install the executable using
@@ -39,5 +38,5 @@ Example immages can be found in `/images` directory. `/images/unsupported` image
     type RGB        = [Byte]
     type Padding    = [Byte]
     ```
-* Negate the image. It's a simple operation of `255 - b`, where `b` is an RGB color byte.
+* Invert the image. It's a simple operation of `255 - b`, where `b` is an RGB color byte.
 * Write the new `BmpImage` as a new `.bmp`.

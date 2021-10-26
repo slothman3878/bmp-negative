@@ -3,10 +3,13 @@ name:               bmp-to-negative-haskell
 version:            0.1.0.0
 
 -- A short (one-line) description of the package.
-synopsis: generates a negative .bmp image
+synopsis: 
+  generates a negative .bmp image
 
 -- A longer description of the package.
-description: generates a neegative .bmp image. Only 24 bpp supported.
+description: 
+  Inverts, or generates a negative .bmp image. 
+  Only 24 bpp and uncompressed images are supported.
 
 -- A URL where users can report bugs.
 -- bug-reports:
