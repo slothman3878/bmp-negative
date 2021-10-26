@@ -38,13 +38,13 @@ toPixelData width rowSize = map (splitAt $3*width) . chunksOf rowSize
 toByteArray :: BmpImage -> [Byte]
 toByteArray (h,p) = (++) h $ concat $ map (uncurry (++)) p
 
--- Negating the Color Bytes. The padding stays the same
-negatePixels :: PixelData -> PixelData
-negatePixels = map (\(x,y)-> (map complement x , y))
+-- Inverting the Color Bytes. The padding stays the same
+invertPixels :: PixelData -> PixelData
+invertPixels = map (\(x,y)-> (map complement x , y))
 
--- Negating enitre image
-negateImage :: BmpImage -> BmpImage
-negateImage (h,p) = (h, negatePixels p)
+-- Invert enitre image
+invertImage :: BmpImage -> BmpImage
+invertImage (h,p) = (h, invertPixels p)
 
 -- Checking constraints on BMP
 -- ByteArray to Either an Error or a BmpImage

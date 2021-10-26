@@ -7,7 +7,7 @@ import BMP
 main :: IO ()
 main = do
   putStrLn "------------------------------------------------------------"
-  putStrLn "Generate a Negative from a BMP file "
+  putStrLn "Invert a 24bpp BMP image "
   putStrLn "------------------------------------------------------------"
   args <- getArgs
   case parseArgs args of
@@ -24,17 +24,17 @@ main = do
             Right parsedImage -> do
               let (name,path) = parseFileName filePath
               let writePath = path ++ "/negative_" ++ name
-              let negative = negateImage parsedImage
+              let negative = invertImage parsedImage
               BS.writeFile writePath $ BS.pack $ toByteArray negative
               putStrLn "Success!!!"
-              putStrLn $ "Negative image is saved to " ++ writePath
+              putStrLn $ "Inverted image is saved to " ++ writePath
   putStrLn "------------------------------------------------------------"
 
 -- Left for parsing error, Right for successful parsing of arguments
 parseArgs :: [String] -> Either String String
 parseArgs [] = Left "ERROR: No Valid Argument Was Given.\nNeed to at provide a valid .bmp file.\nFor assistance, use the -h flag."
 parseArgs (x:xs)
-  | x == "-h"         = Left "Help has arrived!\nRun the exectable with path to the bmp image you want to negate.\n\n    bmp-negative {PATH_TO_BMP_IMAGE}\n\nNegative image will be created in the same directory as the original image.\nSupported images are limited to:\n  1. 24bpp\n  2. uncompressed"
+  | x == "-h"         = Left "Help has arrived!\nRun the exectable with path to the bmp image you want to invert.\n\n    bmp-negative {PATH_TO_BMP_IMAGE}\n\nInverted image will be created in the same directory as the original image.\nSupported images are limited to:\n  1. 24bpp\n  2. uncompressed"
   | validFilePath x   = Right x
   | otherwise         = parseArgs xs
 
