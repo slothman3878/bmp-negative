@@ -23,6 +23,7 @@ type Padding    = [Byte]
 -- Split the Byte array at the offset
 -- Need to consider all list lengths for functional safety
 -- The Pixel Data is rowSize * height bytes from the offset
+-- The bytes afterwards are negligible
 toBmpImage :: Int -> Int -> Int -> [Byte] -> BmpImage
 toBmpImage width height offSet = (\(h,p)->(h,toPixelData width rowSize $ take (rowSize * height) p)) . splitAt offSet
   where rowSize = div (width * 24 + 31) 32 * 4
@@ -37,7 +38,7 @@ toPixelData width rowSize = map (splitAt $3*width) . chunksOf rowSize
 toByteArray :: BmpImage -> [Byte]
 toByteArray (h,p) = (++) h $ concat $ map (uncurry (++)) p
 
--- Negating the RGB values
+-- Negating the Color Bytes. The padding stays the same
 negatePixels :: PixelData -> PixelData
 negatePixels = map (\(x,y)-> (map complement x , y))
 

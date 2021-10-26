@@ -7,10 +7,10 @@ Simple haskell script that creates a negative of a given `.bmp` file. Supported 
 
 |title|original|negative|
 |-|-|-|
-|blackbuck|![](images/blackbuck.bmp)|![](images/negative_blackbuck.bmp)|
-|marbles|![](images/MARBLES.BMP)|![](images/negative_MARBLES.BMP)|
 |bmp_24|![](images/bmp_24.bmP)|![](images/negative_bmp_24.bmP)|
 |snail.bmp|![](images/snail.bmp)|![](images/negative_snail.bmp)|
+|blackbuck|![](images/blackbuck.bmp)|![](images/negative_blackbuck.bmp)|
+|marbles|![](images/MARBLES.BMP)|![](images/negative_MARBLES.BMP)|
 
 Example immages can be found in `/images` directory. `/images/unsupported` images contain examples of unsupported `.bmp` images.
 

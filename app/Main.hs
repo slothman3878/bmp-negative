@@ -2,7 +2,6 @@ module Main where
 import Control.Exception
 import System.Environment
 import qualified Data.ByteString as BS
-import Data.List.Split
 import BMP
 
 main :: IO ()
@@ -21,7 +20,7 @@ main = do
         Right unpackedImage -> do
           -- Now, parse the image. Parse [Byte] as BmpImage 
           case parseImage (BS.unpack unpackedImage) of
-            Left err -> putStrLn $ "ERROR: " ++ err
+            Left err -> putStrLn $ "ERROR: use the -h for help\n" ++ err
             Right parsedImage -> do
               let (name,path) = parseFileName filePath
               let writePath = path ++ "/negative_" ++ name
@@ -31,11 +30,11 @@ main = do
               putStrLn $ "Negative image is saved to " ++ writePath
   putStrLn "------------------------------------------------------------"
 
--- Not the best design. Should ask about this later...
+-- Left for parsing error, Right for successful parsing of arguments
 parseArgs :: [String] -> Either String String
-parseArgs [] = Left "ERROR: No Valid Argument Was Given.\nNeed to at provide a valid .bmp file.\nFor assistance, apply the -h flag."
+parseArgs [] = Left "ERROR: No Valid Argument Was Given.\nNeed to at provide a valid .bmp file.\nFor assistance, use the -h flag."
 parseArgs (x:xs)
-  | x == "-h"         = Left "Help has arrived!\nRun the exectable with path to the bmp image you want to negate."
+  | x == "-h"         = Left "Help has arrived!\nRun the exectable with path to the bmp image you want to negate.\n\n    bmp-negative {PATH_TO_BMP_IMAGE}\n\nNegative image will be created in the same directory as the original image.\nSupported images are limited to:\n  1. 24bpp\n  2. uncompressed"
   | validFilePath x   = Right x
   | otherwise         = parseArgs xs
 
