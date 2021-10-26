@@ -7,7 +7,8 @@ Simple haskell script that inverts (creates a negative of) a given `.bmp` image.
 |title|original|negative|
 |-|-|-|
 |bmp_24|![](images/bmp_24.bmP)|![](images/negative_bmp_24.bmP)|
-|snail.bmp|![](images/snail.bmp)|![](images/negative_snail.bmp)|
+|color wheel|![](images/color_wheel.bmp)|![](images/negative_color_wheel.bmp)|
+|snail|![](images/snail.bmp)|![](images/negative_snail.bmp)|
 |blackbuck|![](images/blackbuck.bmp)|![](images/negative_blackbuck.bmp)|
 |marbles|![](images/MARBLES.BMP)|![](images/negative_MARBLES.BMP)|
 
