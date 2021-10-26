@@ -41,7 +41,3 @@ Example immages can be found in `/images` directory. `/images/unsupported` image
     ```
 * Negate the image. It's a simple operation of `255 - b`, where `b` is an RGB color byte.
 * Write the new `BmpImage` as a new `.bmp`.
-
-## Thoughts
-* Needs better more robuts Error handling
-* Needs more exhaustive tests
