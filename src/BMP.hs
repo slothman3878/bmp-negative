@@ -12,7 +12,7 @@ toInt [] = 0
 toInt [x] = fromIntegral x
 toInt (x:xs) = fromIntegral x + (shift (toInt xs) 8)
 
--- Parsing Image given image width and pixel data row size
+-- Convenient Alias'
 type BmpImage   = (Header,PixelData)
 type Header     = [Byte]
 type PixelData  = [Row]
@@ -20,6 +20,7 @@ type Row        = (RGB,Padding)
 type RGB        = [Byte]
 type Padding    = [Byte]
 
+-- Parsing Image given image width and pixel data row size
 -- Split the Byte array at the offset
 -- Need to consider all list lengths for functional safety
 -- The Pixel Data is rowSize * height bytes from the offset
