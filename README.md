@@ -1,4 +1,4 @@
-## 24 bit BMP to Negative
+## 24 bpp BMP to Negative
 
 Simple haskell script that creates a negative of a given `.bmp` file. Supported `.bmp` is limited to
 
