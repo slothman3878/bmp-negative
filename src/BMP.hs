@@ -58,9 +58,9 @@ parseImage image
   | compression_field /= 0        = Left "compressed BMP: can only accept uncompressed BMP"
   | bpp /= 24                     = Left "not 24bpp: can only support 24bpp images"
   | otherwise                     = Right $ toBmpImage width height offSet image
-  where header_field      = toInt [image!!0,image!!1]
-        compression_field = toInt [image!!30,image!!31,image!!32,image!!33]
-        bpp               = toInt [image!!28,image!!29]
-        offSet            = toInt [image!!10, image!!11, image!!12, image!!13]
-        width             = toInt [image!!18, image!!19, image!!20, image!!21]
-        height            = toInt [image!!22, image!!23, image!!23, image!!24]
+  where header_field      = toInt $ take 2 image
+        offSet            = toInt $ take 4 $ drop 10 image  -- where the pixel data starts
+        width             = toInt $ take 4 $ drop 18 image  -- pixel width of image
+        height            = toInt $ take 4 $ drop 22 image  -- pixel height of image
+        bpp               = toInt $ take 2 $ drop 28 image  -- bits per pixel of image
+        compression_field = toInt $ take 4 $ drop 30 image  -- compression data of bmp
